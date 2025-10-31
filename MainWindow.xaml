@@ -10,130 +10,157 @@
         WindowStartupLocation="CenterScreen">
     
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         
-        <!-- Header -->
-        <Border Grid.Row="0" Background="#2C3E50" Padding="20,15">
-            <TextBlock Text="{Binding Title}" 
-                       FontSize="24" 
-                       FontWeight="Bold" 
-                       Foreground="White"
-                       HorizontalAlignment="Center"/>
-        </Border>
-        
-        <!-- Statistics Panel -->
-        <Border Grid.Row="1" Background="#ECF0F1" Padding="20,15">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Border Background="#3498DB" CornerRadius="8" Padding="15,10" Margin="0,0,20,0">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="💰" FontSize="20" Margin="0,0,10,0"/>
-                        <StackPanel>
-                            <TextBlock Text="Toplam Değer" Foreground="White" FontWeight="Bold"/>
-                            <TextBlock Text="{Binding TotalInventoryValue, StringFormat='{}{0:C}'}" 
-                                       Foreground="White" FontSize="18"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
+        <!-- Left Navigation Panel - Full Height -->
+        <Border Grid.Column="0" Background="#34495E" Padding="0">
+            <StackPanel>
+                <TextBlock Text="📱 ENVANTER YÖNETİMİ" 
+                           FontSize="16" FontWeight="Bold" 
+                           Foreground="White" 
+                           HorizontalAlignment="Center"
+                           Margin="0,20,0,30"
+                           TextWrapping="Wrap"/>
                 
-                <Border Background="#E74C3C" CornerRadius="8" Padding="15,10">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="⚠️" FontSize="20" Margin="0,0,10,0"/>
+                <Button x:Name="AnasayfaButton" 
+                        Content="🏠 Anasayfa" 
+                        Style="{StaticResource MenuButtonStyle}"
+                        Click="MenuButton_Click" Tag="Anasayfa"/>
+                
+                <Button x:Name="StokButton" 
+                        Content="📦 Stok" 
+                        Style="{StaticResource MenuButtonStyle}"
+                        Click="MenuButton_Click" Tag="Stok"/>
+                
+                <Button x:Name="SatislarButton" 
+                        Content="💰 Satışlar" 
+                        Style="{StaticResource MenuButtonStyle}"
+                        Click="MenuButton_Click" Tag="Satislar"/>
+                
+                <Button x:Name="IstatistiklerButton" 
+                        Content="📊 İstatistikler" 
+                        Style="{StaticResource MenuButtonStyle}"
+                        Click="MenuButton_Click" Tag="Istatistikler"/>
+                
+                <Button x:Name="AyarlarButton" 
+                        Content="⚙️ Ayarlar" 
+                        Style="{StaticResource MenuButtonStyle}"
+                        Click="MenuButton_Click" Tag="Ayarlar"/>
+                
+                <!-- Statistics at bottom of menu -->
+                <StackPanel Margin="15,40,15,20">
+                    <Border Background="#3498DB" CornerRadius="8" Padding="15,10" Margin="0,0,0,10">
                         <StackPanel>
-                            <TextBlock Text="Düşük Stok" Foreground="White" FontWeight="Bold"/>
-                            <TextBlock Text="{Binding LowStockCount}" 
-                                       Foreground="White" FontSize="18"/>
+                            <TextBlock Text="� Toplam Değer" Foreground="White" FontWeight="Bold" FontSize="12"/>
+                            <TextBlock Text="{Binding TotalInventoryValue, StringFormat='{}{0:C}'}" 
+                                       Foreground="White" FontSize="16" FontWeight="Bold"/>
                         </StackPanel>
-                    </StackPanel>
-                </Border>
+                    </Border>
+                    
+                    <Border Background="#E74C3C" CornerRadius="8" Padding="15,10">
+                        <StackPanel>
+                            <TextBlock Text="⚠️ Düşük Stok" Foreground="White" FontWeight="Bold" FontSize="12"/>
+                            <TextBlock Text="{Binding LowStockCount}" 
+                                       Foreground="White" FontSize="16" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
             </StackPanel>
         </Border>
         
-        <!-- Main Content -->
-        <Grid Grid.Row="2" Margin="20">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="20"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+        <!-- Right Content Area -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
             
-            <!-- Left Navigation Panel -->
-            <Border Grid.Column="0" Background="#34495E" CornerRadius="8" Padding="0">
-                <StackPanel>
-                    <TextBlock Text="📱 MENÜ" 
-                               FontSize="16" FontWeight="Bold" 
-                               Foreground="White" 
-                               HorizontalAlignment="Center"
-                               Margin="0,15,0,20"/>
-                    
-                    <Button x:Name="AnasayfaButton" 
-                            Content="🏠 Anasayfa" 
-                            Style="{StaticResource MenuButtonStyle}"
-                            Click="MenuButton_Click" Tag="Anasayfa"/>
-                    
-                    <Button x:Name="StokButton" 
-                            Content="📦 Stok" 
-                            Style="{StaticResource MenuButtonStyle}"
-                            Click="MenuButton_Click" Tag="Stok"/>
-                    
-                    <Button x:Name="SatislarButton" 
-                            Content="💰 Satışlar" 
-                            Style="{StaticResource MenuButtonStyle}"
-                            Click="MenuButton_Click" Tag="Satislar"/>
-                    
-                    <Button x:Name="IstatistiklerButton" 
-                            Content="📊 İstatistikler" 
-                            Style="{StaticResource MenuButtonStyle}"
-                            Click="MenuButton_Click" Tag="Istatistikler"/>
-                    
-                    <Button x:Name="AyarlarButton" 
-                            Content="⚙️ Ayarlar" 
-                            Style="{StaticResource MenuButtonStyle}"
-                            Click="MenuButton_Click" Tag="Ayarlar"/>
-                </StackPanel>
-            </Border>
-            
-            <!-- Content Area -->
-            <Grid Grid.Column="2">
+            <!-- Main Content -->
+            <Grid Grid.Row="0" Margin="20">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 
                 <!-- Search and Actions -->
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
-                    <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                             Width="300" Height="35" 
-                             VerticalContentAlignment="Center"
-                             Margin="0,0,10,0">
-                        <TextBox.InputBindings>
-                            <KeyBinding Key="Enter" Command="{Binding SearchProductsCommand}"/>
-                        </TextBox.InputBindings>
-                    </TextBox>
+                <Grid Grid.Row="0" Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="350"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
                     
-                    <Button Content="🔍 Ara" 
-                            Command="{Binding SearchProductsCommand}"
-                            Height="35" Padding="15,0" Margin="0,0,10,0"/>
+                    <!-- Search Box with Embedded Button -->
+                    <Border Grid.Column="0" BorderBrush="#BDC3C7" BorderThickness="2" CornerRadius="20" Background="White">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <!-- Search Button Inside -->
+                            <Button Grid.Column="0" 
+                                    Content="🔍" 
+                                    Command="{Binding SearchProductsCommand}"
+                                    Background="Transparent" 
+                                    BorderThickness="0"
+                                    FontSize="16"
+                                    Cursor="Hand"
+                                    Margin="5,5,0,5"/>
+                            
+                            <!-- Search TextBox -->
+                            <TextBox Grid.Column="1"
+                                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                     Height="40" 
+                                     VerticalContentAlignment="Center"
+                                     FontSize="14"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     Margin="0,5,10,5">
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox">
+                                        <Style.Triggers>
+                                            <Trigger Property="Text" Value="">
+                                                <Setter Property="Background">
+                                                    <Setter.Value>
+                                                        <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                                                            <VisualBrush.Visual>
+                                                                <TextBlock Text="Ürün ara..." Foreground="#7F8C8D" FontSize="14" Margin="5,0"/>
+                                                            </VisualBrush.Visual>
+                                                        </VisualBrush>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Enter" Command="{Binding SearchProductsCommand}"/>
+                                </TextBox.InputBindings>
+                            </TextBox>
+                        </Grid>
+                    </Border>
                     
-                    <Button Content="➕ Yeni Ürün" 
-                            Command="{Binding AddProductCommand}"
-                            Background="#27AE60" Foreground="White"
-                            Height="35" Padding="15,0" Margin="0,0,10,0"/>
-                    
-                    <Button Content="✏️ Düzenle" 
-                            Command="{Binding EditProductCommand}"
-                            Background="#F39C12" Foreground="White"
-                            Height="35" Padding="15,0" Margin="0,0,10,0"/>
-                    
-                    <Button Content="🗑️ Sil" 
-                            Command="{Binding DeleteProductCommand}"
-                            Background="#E74C3C" Foreground="White"
-                            Height="35" Padding="15,0"/>
-                </StackPanel>
+                    <!-- Action Buttons -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="➕ Yeni Ürün" 
+                                Command="{Binding AddProductCommand}"
+                                Background="#27AE60" Foreground="White"
+                                Height="35" Padding="15,0" Margin="10,0,10,0"/>
+                        
+                        <Button Content="✏️ Düzenle" 
+                                Command="{Binding EditProductCommand}"
+                                Background="#F39C12" Foreground="White"
+                                Height="35" Padding="15,0" Margin="0,0,10,0"/>
+                        
+                        <Button Content="🗑️ Sil" 
+                                Command="{Binding DeleteProductCommand}"
+                                Background="#E74C3C" Foreground="White"
+                                Height="35" Padding="15,0"/>
+                    </StackPanel>
+                </Grid>
                 
                 <!-- Products DataGrid -->
                 <DataGrid Grid.Row="1"
@@ -156,20 +183,20 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
+            
+            <!-- Status Bar -->
+            <StatusBar Grid.Row="1" Background="#BDC3C7">
+                <StatusBarItem>
+                    <TextBlock Text="{Binding Products.Count, StringFormat='Toplam Ürün: {0}'}"/>
+                </StatusBarItem>
+                <Separator/>
+                <StatusBarItem>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Durum: "/>
+                        <TextBlock Text="{Binding IsBusy, Converter={x:Static local:BoolToStringConverter.Instance}, ConverterParameter='Yükleniyor...|Hazır'}"/>
+                    </StackPanel>
+                </StatusBarItem>
+            </StatusBar>
         </Grid>
-        
-        <!-- Status Bar -->
-        <StatusBar Grid.Row="3" Background="#BDC3C7">
-            <StatusBarItem>
-                <TextBlock Text="{Binding Products.Count, StringFormat='Toplam Ürün: {0}'}"/>
-            </StatusBarItem>
-            <Separator/>
-            <StatusBarItem>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Durum: "/>
-                    <TextBlock Text="{Binding IsBusy, Converter={x:Static local:BoolToStringConverter.Instance}, ConverterParameter='Yükleniyor...|Hazır'}"/>
-                </StackPanel>
-            </StatusBarItem>
-        </StatusBar>
     </Grid>
 </Window>
