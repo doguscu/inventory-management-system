@@ -30,6 +30,16 @@
                         Style="{StaticResource MenuButtonStyle}"
                         Click="MenuButton_Click" Tag="Anasayfa"/>
                 
+                <Button x:Name="MuhasebeButton" 
+                        Content="💼 Muhasebe" 
+                        Style="{StaticResource MenuButtonStyle}"
+                        Click="MenuButton_Click" Tag="Muhasebe"/>
+                
+                <Button x:Name="MusterilerButton" 
+                        Content="👥 Müşteriler" 
+                        Style="{StaticResource MenuButtonStyle}"
+                        Click="MenuButton_Click" Tag="Musteriler"/>
+                
                 <Button x:Name="StokButton" 
                         Content="📦 Stok" 
                         Style="{StaticResource MenuButtonStyle}"
