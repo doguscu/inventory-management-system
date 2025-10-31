@@ -9,6 +9,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using InventoryApp.ViewModels;
+using InventoryApp.Models;
+using System.Windows.Controls.Primitives;
 
 namespace InventoryApp;
 
@@ -18,6 +20,7 @@ namespace InventoryApp;
 public partial class MainWindow : Window
 {
     private MainViewModel _viewModel;
+    public User? CurrentUser { get; set; }
 
     public MainWindow()
     {
@@ -28,6 +31,21 @@ public partial class MainWindow : Window
         
         // Initialize async data after window loads
         Loaded += MainWindow_Loaded;
+    }
+    
+    public MainWindow(User currentUser) : this()
+    {
+        CurrentUser = currentUser;
+        SetUserInfo();
+    }
+    
+    private void SetUserInfo()
+    {
+        if (CurrentUser != null)
+        {
+            UserFullNameText.Text = CurrentUser.FullName;
+            UserEmailText.Text = CurrentUser.Email;
+        }
     }
 
     private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -109,6 +127,34 @@ public partial class MainWindow : Window
             case "Ayarlar":
                 _viewModel.Title = "Envanter Yönetim Sistemi - Ayarlar";
                 break;
+        }
+    }
+    
+    private void UserProfileButton_Click(object sender, RoutedEventArgs e)
+    {
+        // User menu popup'ını aç/kapat
+        UserMenuPopup.IsOpen = !UserMenuPopup.IsOpen;
+    }
+    
+    private void LogoutButton_Click(object sender, RoutedEventArgs e)
+    {
+        // Popup'ı kapat
+        UserMenuPopup.IsOpen = false;
+        
+        // Çıkış onayı iste
+        var result = MessageBox.Show("Çıkış yapmak istediğinizden emin misiniz?", 
+                                   "Çıkış Onayı", 
+                                   MessageBoxButton.YesNo, 
+                                   MessageBoxImage.Question);
+                                   
+        if (result == MessageBoxResult.Yes)
+        {
+            // Login window'u aç
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.Show();
+            
+            // Bu window'u kapat
+            this.Close();
         }
     }
 }

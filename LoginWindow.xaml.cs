@@ -1,5 +1,8 @@
 using System.Windows;
 using System.Threading.Tasks;
+using InventoryApp.Services;
+using InventoryApp.Data;
+using System.Text.RegularExpressions;
 
 namespace InventoryApp
 {
@@ -12,15 +15,22 @@ namespace InventoryApp
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            // Şimdilik basit doğrulama
-            string username = UsernameTextBox.Text.Trim();
+            // Form validasyonu
+            string email = EmailTextBox.Text.Trim();
             string password = PasswordBox.Password;
 
-            // Boş alan kontrolü
-            if (string.IsNullOrEmpty(username))
+            // E-mail validasyonu
+            if (string.IsNullOrEmpty(email))
             {
-                MessageBox.Show("Lütfen kullanıcı adınızı girin.", "Uyarı", MessageBoxButton.OK, MessageBoxImage.Warning);
-                UsernameTextBox.Focus();
+                MessageBox.Show("Lütfen e-mail adresinizi girin.", "Uyarı", MessageBoxButton.OK, MessageBoxImage.Warning);
+                EmailTextBox.Focus();
+                return;
+            }
+
+            if (!IsValidEmail(email))
+            {
+                MessageBox.Show("Lütfen geçerli bir e-mail adresi girin.", "Uyarı", MessageBoxButton.OK, MessageBoxImage.Warning);
+                EmailTextBox.Focus();
                 return;
             }
 
@@ -37,31 +47,68 @@ namespace InventoryApp
                 LoginButton.Content = "⏳ Giriş yapılıyor...";
                 LoginButton.IsEnabled = false;
 
-                // Şimdilik her giriş başarılı sayılır (database bağlantısı yok)
-                await Task.Delay(1000); // Simulated loading
+                // Database authentication
+                using (var context = new InventoryDbContext())
+                {
+                    var userService = new UserService(context);
+                    var user = await userService.AuthenticateUserAsync(email, password);
 
-                // Ana pencereyi aç
-                MainWindow mainWindow = new MainWindow();
-                
-                // Önce yeni pencereyi göster
-                mainWindow.Show();
-                
-                // Sonra giriş penceresini gizle
-                this.Hide();
-                
-                // Ana pencereyi uygulama ana penceresi olarak belirle
-                Application.Current.MainWindow = mainWindow;
-                
-                // Giriş penceresini kapat
-                this.Close();
+                    if (user != null)
+                    {
+                        // Başarılı giriş
+                        await Task.Delay(500); // Smooth UX
+
+                        // Ana pencereyi kullanıcı bilgisi ile aç
+                        MainWindow mainWindow = new MainWindow(user);
+                        
+                        // Önce yeni pencereyi göster
+                        mainWindow.Show();
+                        
+                        // Sonra giriş penceresini gizle
+                        this.Hide();
+                        
+                        // Ana pencereyi uygulama ana penceresi olarak belirle
+                        Application.Current.MainWindow = mainWindow;
+                        
+                        // Giriş penceresini kapat
+                        this.Close();
+                    }
+                    else
+                    {
+                        // Hatalı giriş
+                        MessageBox.Show("E-mail adresi veya şifre hatalı!\nLütfen bilgilerinizi kontrol edin.", 
+                                      "Giriş Başarısız", 
+                                      MessageBoxButton.OK, 
+                                      MessageBoxImage.Error);
+                        
+                        // Şifre alanını temizle
+                        PasswordBox.Password = "";
+                        PasswordBox.Focus();
+                    }
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Giriş sırasında hata oluştu: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
-                
+            }
+            finally
+            {
                 // Butonu eski haline getir
                 LoginButton.Content = "🔐 GİRİŞ YAP";
                 LoginButton.IsEnabled = true;
+            }
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var regex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+                return regex.IsMatch(email);
+            }
+            catch
+            {
+                return false;
             }
         }
 

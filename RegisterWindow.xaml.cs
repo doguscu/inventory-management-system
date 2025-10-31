@@ -2,6 +2,8 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using System.Threading.Tasks;
+using InventoryApp.Services;
+using InventoryApp.Data;
 
 namespace InventoryApp
 {
@@ -79,24 +81,55 @@ namespace InventoryApp
                 RegisterSubmitButton.Content = "⏳ Kayıt oluşturuluyor...";
                 RegisterSubmitButton.IsEnabled = false;
 
-                // Simulated registration process
-                await Task.Delay(1500);
+                // Database registration
+                using (var context = new InventoryDbContext())
+                {
+                    var userService = new UserService(context);
+                    
+                    // Check if email already exists
+                    if (await userService.EmailExistsAsync(email))
+                    {
+                        MessageBox.Show("Bu e-mail adresi zaten kayıtlı!\nLütfen farklı bir e-mail adresi kullanın.", 
+                                      "E-mail Zaten Mevcut", 
+                                      MessageBoxButton.OK, 
+                                      MessageBoxImage.Warning);
+                        EmailTextBox.Focus();
+                        return;
+                    }
 
-                // Başarı mesajı
-                MessageBox.Show("Kayıt işleminiz başarıyla tamamlandı!\nArtık giriş yapabilirsiniz.", 
-                              "Kayıt Başarılı", 
-                              MessageBoxButton.OK, 
-                              MessageBoxImage.Information);
+                    // Register user
+                    bool success = await userService.RegisterUserAsync(email, fullName, password);
+                    
+                    if (success)
+                    {
+                        // Başarı mesajı
+                        MessageBox.Show("Kayıt işleminiz başarıyla tamamlandı!\nArtık giriş yapabilirsiniz.", 
+                                      "Kayıt Başarılı", 
+                                      MessageBoxButton.OK, 
+                                      MessageBoxImage.Information);
 
-                // Giriş sayfasına geri dön
-                LoginWindow loginWindow = new LoginWindow();
-                loginWindow.Show();
-                this.Close();
+                        // Giriş sayfasına geri dön
+                        LoginWindow loginWindow = new LoginWindow();
+                        loginWindow.EmailTextBox.Text = email; // E-mail'i önceden doldur
+                        loginWindow.PasswordBox.Focus(); // Password alanına odaklan
+                        loginWindow.Show();
+                        this.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Kayıt işlemi sırasında bir hata oluştu.\nLütfen tekrar deneyin.", 
+                                      "Kayıt Başarısız", 
+                                      MessageBoxButton.OK, 
+                                      MessageBoxImage.Error);
+                    }
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Kayıt sırasında hata oluştu: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
-                
+            }
+            finally
+            {
                 // Butonu eski haline getir
                 RegisterSubmitButton.Content = "👤 KAYIT OL";
                 RegisterSubmitButton.IsEnabled = true;

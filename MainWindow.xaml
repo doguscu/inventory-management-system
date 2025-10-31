@@ -137,6 +137,8 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="350"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     
                     <!-- Search Box with Embedded Button -->
@@ -191,11 +193,11 @@
                     </Border>
                     
                     <!-- Action Buttons -->
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,0,0,0">
                         <Button Content="➕ Yeni Ürün" 
                                 Command="{Binding AddProductCommand}"
                                 Background="#27AE60" Foreground="White"
-                                Height="35" Padding="15,0" Margin="10,0,10,0"/>
+                                Height="35" Padding="15,0" Margin="0,0,10,0"/>
                         
                         <Button Content="✏️ Düzenle" 
                                 Command="{Binding EditProductCommand}"
@@ -207,6 +209,83 @@
                                 Background="#E74C3C" Foreground="White"
                                 Height="35" Padding="15,0"/>
                     </StackPanel>
+                    
+                    <!-- User Profile Section -->
+                    <Border Grid.Column="3" Background="#ECF0F1" CornerRadius="20" Padding="10,5" Margin="10,0,0,0">
+                        <Button x:Name="UserProfileButton" 
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Cursor="Hand"
+                                Click="UserProfileButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <!-- Profile Photo -->
+                                <Border Width="30" Height="30" CornerRadius="15" Background="#3498DB" Margin="0,0,10,0">
+                                    <TextBlock Text="👤" FontSize="16" 
+                                               HorizontalAlignment="Center" 
+                                               VerticalAlignment="Center"
+                                               Foreground="White"/>
+                                </Border>
+                                
+                                <!-- User Name -->
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock x:Name="UserFullNameText" 
+                                               Text="{Binding CurrentUser.FullName}" 
+                                               FontWeight="Bold" 
+                                               FontSize="13"
+                                               Foreground="#2C3E50"/>
+                                    <TextBlock x:Name="UserEmailText" 
+                                               Text="{Binding CurrentUser.Email}" 
+                                               FontSize="11"
+                                               Foreground="#7F8C8D"/>
+                                </StackPanel>
+                                
+                                <!-- Dropdown Arrow -->
+                                <TextBlock Text="▼" FontSize="10" 
+                                           VerticalAlignment="Center" 
+                                           Margin="8,0,0,0"
+                                           Foreground="#7F8C8D"/>
+                            </StackPanel>
+                        </Button>
+                    </Border>
+                    
+                    <!-- User Menu Popup -->
+                    <Popup x:Name="UserMenuPopup" 
+                           PlacementTarget="{Binding ElementName=UserProfileButton}"
+                           Placement="Bottom"
+                           StaysOpen="False"
+                           AllowsTransparency="True">
+                        <Border Background="White" 
+                                BorderBrush="#BDC3C7" 
+                                BorderThickness="1" 
+                                CornerRadius="8"
+                                Margin="5">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" Opacity="0.2" BlurRadius="10" ShadowDepth="2"/>
+                            </Border.Effect>
+                            <StackPanel MinWidth="150">
+                                <Button x:Name="LogoutButton" 
+                                        Content="🚪 Çıkış Yap"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left"
+                                        Padding="15,10"
+                                        FontSize="13"
+                                        Cursor="Hand"
+                                        Click="LogoutButton_Click">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#F8F9FA"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
                 </Grid>
                 
                 <!-- Products DataGrid -->
