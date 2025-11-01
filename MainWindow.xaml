@@ -121,28 +121,32 @@
         <!-- Right Content Area -->
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             
-            <!-- Main Content -->
-            <Grid Grid.Row="0" Margin="20">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                
-                <!-- Search and Actions -->
-                <Grid Grid.Row="0" Margin="0,0,0,15">
+            <!-- Header with Search and User Profile -->
+            <Border Grid.Row="0" Background="#F8F9FA" BorderBrush="#E9ECEF" BorderThickness="0,0,0,1" Padding="20,10">
+                <Grid>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="350"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     
+                    <!-- Page Title -->
+                    <TextBlock Grid.Column="0" x:Name="PageTitleText"
+                               Text="🏠 Anasayfa" 
+                               FontSize="20" 
+                               FontWeight="Bold" 
+                               Foreground="#2C3E50"
+                               VerticalAlignment="Center"
+                               Margin="0,0,20,0"/>
+                    
                     <!-- Search Box with Embedded Button -->
-                    <Border Grid.Column="0" BorderBrush="#BDC3C7" BorderThickness="2" CornerRadius="20" Background="White">
+                    <Border Grid.Column="1" BorderBrush="#BDC3C7" BorderThickness="2" CornerRadius="20" Background="White">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="40"/>
@@ -176,7 +180,7 @@
                                                     <Setter.Value>
                                                         <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
                                                             <VisualBrush.Visual>
-                                                                <TextBlock Text="Ürün ara..." Foreground="#7F8C8D" FontSize="14" Margin="5,0"/>
+                                                                <TextBlock Text="Tüm sayfalarda arama..." Foreground="#7F8C8D" FontSize="14" Margin="5,0"/>
                                                             </VisualBrush.Visual>
                                                         </VisualBrush>
                                                     </Setter.Value>
@@ -192,26 +196,8 @@
                         </Grid>
                     </Border>
                     
-                    <!-- Action Buttons -->
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,0,0,0">
-                        <Button Content="➕ Yeni Ürün" 
-                                Command="{Binding AddProductCommand}"
-                                Background="#27AE60" Foreground="White"
-                                Height="35" Padding="15,0" Margin="0,0,10,0"/>
-                        
-                        <Button Content="✏️ Düzenle" 
-                                Command="{Binding EditProductCommand}"
-                                Background="#F39C12" Foreground="White"
-                                Height="35" Padding="15,0" Margin="0,0,10,0"/>
-                        
-                        <Button Content="🗑️ Sil" 
-                                Command="{Binding DeleteProductCommand}"
-                                Background="#E74C3C" Foreground="White"
-                                Height="35" Padding="15,0"/>
-                    </StackPanel>
-                    
                     <!-- User Profile Section -->
-                    <Border Grid.Column="3" Background="#ECF0F1" CornerRadius="20" Padding="10,5" Margin="10,0,0,0">
+                    <Border Grid.Column="3" Background="#ECF0F1" CornerRadius="20" Padding="10,5">
                         <Button x:Name="UserProfileButton" 
                                 Background="Transparent"
                                 BorderThickness="0"
@@ -287,33 +273,17 @@
                         </Border>
                     </Popup>
                 </Grid>
-                
-                <!-- Products DataGrid -->
-                <DataGrid Grid.Row="1"
-                          ItemsSource="{Binding Products}"
-                          SelectedItem="{Binding SelectedProduct}"
-                          AutoGenerateColumns="False"
-                          CanUserAddRows="False"
-                          CanUserDeleteRows="False"
-                          GridLinesVisibility="Horizontal"
-                          HeadersVisibility="Column"
-                          SelectionMode="Single">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
-                        <DataGridTextColumn Header="Ürün Adı" Binding="{Binding Name}" Width="200"/>
-                        <DataGridTextColumn Header="Barkod" Binding="{Binding Barcode}" Width="120"/>
-                        <DataGridTextColumn Header="Kategori" Binding="{Binding Category.Name}" Width="100"/>
-                        <DataGridTextColumn Header="Fiyat" Binding="{Binding Price, StringFormat='{}{0:C}'}" Width="100"/>
-                        <DataGridTextColumn Header="Stok" Binding="{Binding StockQuantity}" Width="80"/>
-                        <DataGridTextColumn Header="Açıklama" Binding="{Binding Description}" Width="*"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
+            </Border>
             
+            <!-- Main Content Area -->
+            <Border Grid.Row="1" Margin="20">
+                <ContentPresenter x:Name="MainContentPresenter" 
+                                  Content="{Binding CurrentView}"/>
+            </Border>
             <!-- Status Bar -->
-            <StatusBar Grid.Row="1" Background="#BDC3C7">
+            <StatusBar Grid.Row="2" Background="#BDC3C7">
                 <StatusBarItem>
-                    <TextBlock Text="{Binding Products.Count, StringFormat='Toplam Ürün: {0}'}"/>
+                    <TextBlock Text="{Binding StatusText}"/>
                 </StatusBarItem>
                 <Separator/>
                 <StatusBarItem>

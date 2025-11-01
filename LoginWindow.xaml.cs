@@ -8,9 +8,71 @@ namespace InventoryApp
 {
     public partial class LoginWindow : Window
     {
+        private SettingsService _settingsService;
+
         public LoginWindow()
         {
             InitializeComponent();
+            _settingsService = new SettingsService();
+            LoadSavedCredentials();
+        }
+
+        private void LoadSavedCredentials()
+        {
+            try
+            {
+                var settings = _settingsService.LoadSettings();
+                if (settings.RememberMe && !string.IsNullOrEmpty(settings.SavedEmail))
+                {
+                    EmailTextBox.Text = settings.SavedEmail;
+                    if (!string.IsNullOrEmpty(settings.SavedPassword))
+                    {
+                        PasswordBox.Password = CryptoHelper.Decrypt(settings.SavedPassword);
+                    }
+                    RememberMeCheckBox.IsChecked = true;
+                    
+                    // Password alanına focus ver
+                    if (!string.IsNullOrEmpty(PasswordBox.Password))
+                    {
+                        PasswordBox.Focus();
+                        PasswordBox.SelectAll();
+                    }
+                }
+            }
+            catch
+            {
+                // Herhangi bir hata durumunda sessizce devam et
+            }
+        }
+
+        private async Task SaveCredentialsIfRequested(string email, string password)
+        {
+            try
+            {
+                var settings = _settingsService.LoadSettings();
+                
+                if (RememberMeCheckBox.IsChecked == true)
+                {
+                    // "Beni Hatırla" işaretliyse bilgileri kaydet
+                    settings.RememberMe = true;
+                    settings.SavedEmail = email;
+                    settings.SavedPassword = CryptoHelper.Encrypt(password);
+                }
+                else
+                {
+                    // İşaretli değilse kayıtlı bilgileri temizle
+                    settings.RememberMe = false;
+                    settings.SavedEmail = string.Empty;
+                    settings.SavedPassword = string.Empty;
+                }
+                
+                _settingsService.SaveSettings(settings);
+                await Task.CompletedTask;
+            }
+            catch
+            {
+                // Herhangi bir hata durumunda sessizce devam et
+            }
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -55,6 +117,9 @@ namespace InventoryApp
 
                     if (user != null)
                     {
+                        // "Beni Hatırla" seçeneği kontrol edilirse ayarları kaydet
+                        await SaveCredentialsIfRequested(email, password);
+                        
                         // Başarılı giriş
                         await Task.Delay(500); // Smooth UX
 
